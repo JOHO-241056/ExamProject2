@@ -1,31 +1,35 @@
-public abstract class Monster implements Creature {
-    private String name;
-    private char suffix;
-    private int hp;
+package creature;
 
-    public Monster(String name, char suffix, int hp) {
+import weapon.Weapon;
+
+public abstract class Character implements Creature {
+    private String name;
+    private int hp;
+    private Weapon weapon;
+
+    public Character(String name, int hp, Weapon weapon) {
         if(hp < 0) {
             throw new IllegalArgumentException("初期設定に誤りがあるため、キャラクターを作成できませんでした");
         }
         this.name = name;
-        this.suffix = suffix;
         this.hp = hp;
+        this.weapon = weapon;
     }
 
     public final boolean isAlive() {
         return getHp() > 0;
     }
 
+    public void die() {
+        System.out.println(getName() + "は死んでしまった！");
+    }
+
     public void showStatus() {
-        System.out.println(getName() + getSuffix() + ": HP " + getHp());
+        System.out.println(getName() + ": HP " + getHp());
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public char getSuffix() {
-        return this.suffix;
     }
 
     public int getHp() {
@@ -34,5 +38,9 @@ public abstract class Monster implements Creature {
 
     public void setHp(int hp) {
         this.hp = Math.max(hp, 0);
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
     }
 }
