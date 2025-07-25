@@ -7,29 +7,51 @@ import creature.character.Wizard;
 import creature.monster.Goblin;
 import creature.monster.Matango;
 import creature.monster.Slime;
+import weapon.Dagger;
+import weapon.Sword;
+import weapon.Wand;
 
 import java.util.ArrayList;
 
 public class GameMaster {
     public static void main(String[] args) {
-        Hero h = new Hero("勇者", 100, "剣");
-        Wizard w = new Wizard("魔法使い", 60, 20);
-        Thief t = new Thief("盗賊", 70);
+        Dagger dagger = new Dagger();
+        Sword sword = new Sword();
+        Wand wand = new Wand();
+        Hero h = new Hero("勇者", 100, sword);
+        Wizard w = new Wizard("魔法使い", 60, 20, wand);
+        Thief t = new Thief("盗賊", 70, dagger);
         ArrayList<creature.Character> party =  new ArrayList<>();
         party.add(h);
         party.add(w);
         party.add(t);
 
-        Matango mA = new Matango('A', 45);
-        Goblin gA = new Goblin('A', 50);
-        Slime sA = new Slime('A', 40);
+
         ArrayList<Monster> monsters = new ArrayList<>();
-        monsters.add(mA);
-        monsters.add(gA);
-        monsters.add(sA);
+        char suffixMatango = 'A';
+        char suffixGoblin = 'A';
+        char suffixSlime = 'A';
+        for(int i = 0; i < 5; i++) {
+            int x = (int) (Math.random() * 3);
+            switch(x) {
+                case 0:
+                    monsters.add(new Matango(suffixMatango, 45));
+                    suffixMatango++;
+                    break;
+                case 1:
+                    monsters.add(new Goblin(suffixGoblin, 50));
+                    suffixGoblin++;
+                    break;
+                case 2:
+                    monsters.add(new Slime(suffixSlime, 40));
+                    suffixSlime++;
+                    break;
+            }
+        }
+
 
         System.out.println("---味方パーティー---");
-        for(creature.Character c : party) {
+        for(Character c : party) {
             c.showStatus();
         }
 
@@ -38,30 +60,12 @@ public class GameMaster {
             m.showStatus();
         }
 
-        System.out.println();
-        System.out.println("味方の総攻撃！");
-        for(creature.Character c : party) {
-            for(Monster m : monsters) {
-                c.attack(m);
-            }
+
+        while(party.size() > 0 ||  monsters.size() > 0) {
+            System.out.println("\n味方のターン");
+
         }
 
-        System.out.println();
-        System.out.println("敵の総攻撃！");
-        for(Monster m : monsters) {
-            for(creature.Character c : party) {
-                m.attack(c);
-            }
-        }
-
-        System.out.println();
-        System.out.println("ダメージを受けた勇者が突然光りだした！");
-        SuperHero sh = new SuperHero(h);
-        party.set(party.indexOf(h), sh);
-        System.out.println("勇者はスーパーヒーローに進化した！");
-        for(Monster m : monsters) {
-            sh.attack(m);
-        }
 
         System.out.println();
         System.out.println("---味方パーティ最終ステータス---");

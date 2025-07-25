@@ -14,6 +14,14 @@ public abstract class Monster implements Creature {
         this.hp = hp;
     }
 
+    public void run() {
+        System.out.println(getName() + getSuffix() + "は逃げ出した");
+    }
+
+    public void die() {
+        System.out.println(getName() + getSuffix() + "を倒した！");
+    }
+
     public final boolean isAlive() {
         return getHp() > 0;
     }
