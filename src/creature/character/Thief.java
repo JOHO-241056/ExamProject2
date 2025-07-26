@@ -1,7 +1,7 @@
 package creature.character;
 
 import creature.Character;
-import creature.Creature;
+import creature.Monster;
 import weapon.Weapon;
 
 public class Thief extends Character {
@@ -11,7 +11,7 @@ public class Thief extends Character {
         super(name, hp, weapon);
     }
 
-    public void attack(Creature target) {
+    public void attack(Monster target) {
         int damage = getWeapon().getDamage() * 2;
         System.out.println(getName() + "は"+ getWeapon().getName() + "で素早く2回攻撃した！" + target.getName() + "に" + damage + "のダメージを与えた！");
         target.setHp(target.getHp() - damage);
@@ -19,6 +19,7 @@ public class Thief extends Character {
 
     public void guard() {
         this.guard = true;
+        System.out.println("盗賊は身を守っている！");
     }
 
     public void setHp(int hp) {

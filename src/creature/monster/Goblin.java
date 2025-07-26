@@ -1,6 +1,6 @@
 package creature.monster;
 
-import creature.Creature;
+import creature.Character;
 import creature.Monster;
 
 public class Goblin extends Monster {
@@ -8,7 +8,7 @@ public class Goblin extends Monster {
         super("ゴブリン", suffix, hp);
     }
 
-    public void attack(Creature target) {
+    public void attack(Character target) {
         int damage = 8;
         System.out.println(getName() + getSuffix() + "はナイフで切りつけた！" + target.getName() + "に" + damage + "のダメージを与えた！");
         target.setHp(target.getHp() - damage);

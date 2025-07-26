@@ -3,9 +3,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class KeyInput {
+    private final BufferedReader br;
+
+    public KeyInput() {
+        this.br = new BufferedReader(new InputStreamReader(System.in));
+    }
+
     public String readString() {
         String inputStr = "";
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+        try {
             inputStr = br.readLine();
         } catch (IOException e) {
             System.out.println("エラー: " + e.getMessage());
@@ -20,6 +26,16 @@ public class KeyInput {
             inputStr = readString();
             if(!inputStr.isEmpty()) return inputStr;
             System.out.println(inputMsg + "が入力されていません。再入力してください。");
+        }
+    }
+
+    public int readInt(String inputMsg) {
+        while (true) {
+            try {
+                return Integer.parseInt(readString(inputMsg));
+            } catch (NumberFormatException e) {
+                System.out.println("整数値を入力してください。再入力してください。");
+            }
         }
     }
 }

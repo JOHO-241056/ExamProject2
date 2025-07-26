@@ -1,7 +1,7 @@
 package creature.character;
 
 import creature.Character;
-import creature.Creature;
+import creature.Monster;
 import weapon.Weapon;
 
 public class Wizard extends Character {
@@ -12,7 +12,7 @@ public class Wizard extends Character {
         this.mp = mp;
     }
 
-    public void magic(Creature target) {
+    public void magic(Monster target) {
         int damage = getWeapon().getDamage();
         int mpCost = getWeapon().getCost();
 
@@ -21,12 +21,12 @@ public class Wizard extends Character {
             return;
         }
 
-        System.out.println(getName() + getWeapon().attackMessage() + target.getName() + "に" + damage + "のダメージを与えた！");
+        System.out.println(getName() + "は" + getWeapon().getName() + getWeapon().attackMessage() + target.getName() + "に" + damage + "のダメージを与えた！");
         target.setHp(target.getHp() - damage);
         setMp(getMp() - mpCost);
     }
 
-    public void attack(Creature target) {
+    public void attack(Monster target) {
         int damage = 3;
         System.out.println(getName() + "は石を投げた！" + target.getName() + "に" + damage + "のダメージを与えた！");
         target.setHp(target.getHp() - damage);

@@ -24,6 +24,8 @@ public abstract class Character implements Creature {
         System.out.println(getName() + "は死んでしまった！");
     }
 
+    public abstract void attack(Monster target);
+
     public void showStatus() {
         System.out.println(getName() + ": HP " + getHp());
     }

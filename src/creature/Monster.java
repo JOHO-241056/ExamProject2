@@ -22,6 +22,8 @@ public abstract class Monster implements Creature {
         System.out.println(getName() + getSuffix() + "を倒した！");
     }
 
+    public abstract void attack(Character target);
+
     public final boolean isAlive() {
         return getHp() > 0;
     }
