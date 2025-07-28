@@ -25,7 +25,7 @@ public class GameMaster {
         Hero hero = new Hero("勇者", 100, sword);
         Wizard wizard = new Wizard("魔法使い", 60, 20, wand);
         Thief thief = new Thief("盗賊", 70, dagger);
-        ArrayList<creature.Character> party =  new ArrayList<>();
+        ArrayList<Character> party =  new ArrayList<>();
         party.add(hero);
         party.add(wizard);
         party.add(thief);
@@ -59,82 +59,107 @@ public class GameMaster {
         System.out.println();
 
         //戦闘開始
-        while(!party.isEmpty() && !monsters.isEmpty()) {
+        battle:while(!party.isEmpty() && !monsters.isEmpty()) {
             System.out.println("---味方のターン---");
-            ListIterator<Character> it = party.listIterator();
+            ListIterator<Character> itParty = party.listIterator();
 
-            while (it.hasNext()) {
-                Character c = it.next();
+            while (itParty.hasNext()) {
+                Character c = itParty.next();
                 System.out.println(c.getName() + "のターン");
 
-                if (c instanceof Hero h) {
-                    System.out.println("1:攻撃");
-                    System.out.println("2:スーパーヒーローになる");
-                    int action = readCommand(2);
-                    switch(action) {
-                        case 1:
-                            h.attack(selectAttackTarget(monsters));
-                            System.out.println();
-                            break;
-                        case 2:
-                            if (h.getHp() > 30) {
-                                SuperHero superHero = new SuperHero(h);
-                                it.set(superHero);
-                                System.out.println(h.getName() + "はスーパーヒーローに進化した！");
-                                System.out.println(h.getName() + "は力を解放する代償として30のダメージを受けた！");
-                                System.out.println();
-                            } else {
-                                System.out.println(h.getName() + "はスーパーヒーローに進化しようとしたが、その代償は大きすぎた…");
-                                h.die();
-                                it.remove();
-                                System.out.println();
-                            }
-                            break;
+                switch (c) {
+                    case SuperHero sh -> {
+                        sh.attack(selectAttackTarget(monsters));
                     }
+                    case Hero h -> {
+                        System.out.println("1:攻撃");
+                        System.out.println("2:スーパーヒーローになる");
+                        int action = readCommand(2);
+                        switch (action) {
+                            case 1:
+                                h.attack(selectAttackTarget(monsters));
+                                break;
+                            case 2:
+                                if (h.getHp() > 30) {
+                                    SuperHero superHero = new SuperHero(h);
+                                    itParty.set(superHero);
+                                    System.out.println(h.getName() + "はスーパーヒーローに進化した！");
+                                    System.out.println(h.getName() + "は力を解放する代償として30のダメージを受けた！");
+                                } else {
+                                    System.out.println(h.getName() + "はスーパーヒーローに進化しようとしたが、その代償は大きすぎた…");
+                                    h.die();
+                                    itParty.remove();
+                                }
+                                break;
+                        }
 
 
-                } else if (c instanceof Wizard w) {
-                    System.out.println("1:攻撃");
-                    System.out.println("2:魔法攻撃");
-                    int action = readCommand(2);
-                    switch(action) {
-                        case 1:
-                            w.attack(selectAttackTarget(monsters));
-                            System.out.println();
-                            break;
-                        case 2:
-                            w.magic(selectAttackTarget(monsters));
-                            System.out.println();
-                            break;
                     }
+                    case Wizard w -> {
+                        System.out.println("1:攻撃");
+                        System.out.println("2:魔法攻撃");
+                        int action = readCommand(2);
+                        switch (action) {
+                            case 1:
+                                w.attack(selectAttackTarget(monsters));
+                                break;
+                            case 2:
+                                w.magic(selectAttackTarget(monsters));
+                                break;
+                        }
 
-                } else if (c instanceof Thief t) {
-                    System.out.println("1:攻撃");
-                    System.out.println("2:守り");
-                    int action = readCommand(2);
-                    switch(action) {
-                        case 1:
-                            t.attack(selectAttackTarget(monsters));
-                            System.out.println();
-                            break;
-                        case 2:
-                            t.guard();
-                            System.out.println();
-                            break;
                     }
-
-                } else if (c instanceof SuperHero sh) {
-                    sh.attack(selectAttackTarget(monsters));
-                    System.out.println();
+                    case Thief t -> {
+                        System.out.println("1:攻撃");
+                        System.out.println("2:守り");
+                        int action = readCommand(2);
+                        switch (action) {
+                            case 1:
+                                t.attack(selectAttackTarget(monsters));
+                                break;
+                            case 2:
+                                t.guard();
+                                break;
+                        }
+                    }
+                    default -> throw new IllegalStateException("Unexpected value: " + c);
                 }
 
-                if(monsters.isEmpty()) break;
+                monsters.removeIf(m -> {
+                    if (!m.isAlive()) {
+                        m.die(); // die()メソッドを実行
+                        return true;     // trueを返すとリストから削除される
+                    }
+                    return false;        // falseなら何もしない
+                });
+                System.out.println();
+                if(monsters.isEmpty()) break battle;
             }
+
+            System.out.println("---敵のターン---");
+            for(Monster m : monsters) {
+                m.attack(party.get(randomInt(party.size())));
+                party.removeIf(c -> {
+                    if (!c.isAlive()) {
+                        c.die(); // die()メソッドを実行
+                        return true;     // trueを返すとリストから削除される
+                    }
+                    return false;        // falseなら何もしない
+                });
+                if(party.isEmpty()) break battle;
+            }
+            System.out.println();
+
+            showAllStatus("味方パーティー", party);
+            showAllStatus("敵グループ", monsters);
+            System.out.println();
         }
 
-        //最終ステータス表示
-        showAllResults("味方パーティー", party);
-        showAllResults("敵グループ", monsters);
+        if(monsters.isEmpty()) {
+            System.out.println("敵を全て倒した！" + party.getFirst().getName() + "達は勝利した!");
+        } else {
+            System.out.println("味方パーティは全滅してしまった…");
+        }
     }
 
     private static void showAllStatus(String title, ArrayList<? extends Creature> group) {
